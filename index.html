@@ -90,20 +90,23 @@
 }
 
 
-    function animate() {
+    let frame = 0;
+const totalFrames = 500;
+
+function animate() {
   frame++;
-  if (frame > totalFrames) frame = totalFrames;
+  if (frame > totalFrames) {
+    frame = 0;  // tekrar başa dön
+  }
 
-  // Ölçeği sinüs fonksiyonuyla belirle, 0.9 ile 1.1 arasında salınsın
-  const scale = 1 + 0.1 * Math.sin(frame * 0.2);
-
-  drawHeart(frame * (2 * Math.PI / totalFrames), scale);
+  drawHeart(frame * (2 * Math.PI / totalFrames));
 
   if (frame > 100) {
     message.style.opacity = 1;
   }
   requestAnimationFrame(animate);
 }
+
 
 
     volumeControl.addEventListener('input', e => {
