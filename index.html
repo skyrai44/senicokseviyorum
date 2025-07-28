@@ -71,32 +71,40 @@
     let frame = 0;
     const totalFrames = 500;
 
-    function drawHeart(tMax) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.save();
-      ctx.translate(canvas.width / 2, canvas.height / 2 + 20);
-      ctx.scale(10, -10);
-      ctx.beginPath();
-      for (let i = 0; i <= tMax; i += 0.01) {
-        const { x, y } = heart(i);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = 'red';
-      ctx.lineWidth = 0.15;
-      ctx.stroke();
-      ctx.restore();
-    }
+    function drawHeart(tMax, scale) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.save();
+  ctx.translate(canvas.width / 2, canvas.height / 2 + 20);
+  ctx.scale(10 * scale, -10 * scale); // Ölçek burada değişiyor
+
+  ctx.beginPath();
+  for (let i = 0; i <= tMax; i += 0.01) {
+    const {x, y} = heart(i);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = 'red';
+  ctx.lineWidth = 0.15;
+  ctx.stroke();
+  ctx.restore();
+}
+
 
     function animate() {
-      frame++;
-      if (frame > totalFrames) frame = totalFrames;
-      drawHeart(frame * (2 * Math.PI / totalFrames));
-      if (frame > 100) {
-        message.style.opacity = 1;
-      }
-      requestAnimationFrame(animate);
-    }
+  frame++;
+  if (frame > totalFrames) frame = totalFrames;
+
+  // Ölçeği sinüs fonksiyonuyla belirle, 0.9 ile 1.1 arasında salınsın
+  const scale = 1 + 0.1 * Math.sin(frame * 0.2);
+
+  drawHeart(frame * (2 * Math.PI / totalFrames), scale);
+
+  if (frame > 100) {
+    message.style.opacity = 1;
+  }
+  requestAnimationFrame(animate);
+}
+
 
     volumeControl.addEventListener('input', e => {
       music.volume = e.target.value;
