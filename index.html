@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seni Seviyorum Kalp Animasyonu</title>
+  <style>
+    body {
+      margin: 0;
+      background: url('n.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+      color: white;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+      background: transparent;
+    }
+    #message {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      top: 50%;
+      font-size: 2.5em;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 2s ease-in-out;
+      user-select: none;
+    }
+    #controls {
+      position: fixed;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px 15px;
+      border-radius: 15px;
+    }
+    input[type=range] {
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="heartCanvas" width="400" height="400"></canvas>
+  <div id="message">Seni Seviyorum ❤️</div>
+  <div id="controls">
+    <label for="volume">Ses Seviyesi</label>
+    <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
+  </div>
+  <audio id="music" loop>
+    <source src="kkk.mp3" type="audio/mpeg">
+    Tarayıcınız audio elementini desteklemiyor.
+  </audio>
+  <script>
+    const canvas = document.getElementById('heartCanvas');
+    const ctx = canvas.getContext('2d');
+    const message = document.getElementById('message');
+    const music = document.getElementById('music');
+    const volumeControl = document.getElementById('volume');
+
+    function heart(t) {
+      const x = 16 * Math.pow(Math.sin(t), 3);
+      const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+      return { x, y };
+    }
+
+    let frame = 0;
+    const totalFrames = 500;
+
+    function drawHeart(tMax) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.translate(canvas.width / 2, canvas.height / 2 + 20);
+      ctx.scale(10, -10);
+      ctx.beginPath();
+      for (let i = 0; i <= tMax; i += 0.01) {
+        const { x, y } = heart(i);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = 'red';
+      ctx.lineWidth = 0.15;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function animate() {
+      frame++;
+      if (frame > totalFrames) frame = totalFrames;
+      drawHeart(frame * (2 * Math.PI / totalFrames));
+      if (frame > 100) {
+        message.style.opacity = 1;
+      }
+      requestAnimationFrame(animate);
+    }
+
+    volumeControl.addEventListener('input', e => {
+      music.volume = e.target.value;
+    });
+
+    window.addEventListener('click', () => {
+      if (music.paused) {
+        music.play();
+      }
+    }, { once: true });
+
+    animate();
+  </script>
+</body>
+</html>
